@@ -1,34 +1,81 @@
+using BandLabAssesment.Extensions;
+using BandLabAssesment.Mappers;
+using BandLabAssesment.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using System.IO;
+using System;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Web.Http;
 
-namespace BandLabAssesment.Functions.V1
+namespace BandLabAssesment.Functions.V1;
+
+public class CreatePost
 {
-    public static class CreatePost
+    private readonly ImageUploader _imageUploader;
+    private readonly PostsService _postsService;
+
+    public CreatePost(ImageUploader imageUploader, PostsService postsService)
     {
-        [FunctionName("Function1")]
-        public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
-            ILogger log)
+        _imageUploader = imageUploader;
+        _postsService = postsService;
+    }
+
+    [FunctionName(Constants.Functions.CreatePostV1)]
+    public async Task<IActionResult> Run(
+        [HttpTrigger(AuthorizationLevel.Function, "post", Route = Constants.ApiRoutes.CreatePostV1)] HttpRequest req,
+        ILogger log,
+        CancellationToken cancellationToken)
+    {
+        try
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
+            var validationResult = ValidateRequest(req);
+            if (!validationResult.IsValid)
+                return new BadRequestObjectResult(validationResult);
 
-            string name = req.Query["name"];
+            using var stream = req.Form.Files[0].OpenReadStream();
+            var fileName = req.Form.Files[0].FileName;
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            dynamic data = JsonConvert.DeserializeObject(requestBody);
-            name = name ?? data?.name;
+            var originalImageUrl = await _imageUploader.UploadImage(stream, IsOriginalImage: true, fileName, cancellationToken);
+            stream.Reset();
 
-            string responseMessage = string.IsNullOrEmpty(name)
-                ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
-                : $"Hello, {name}. This HTTP triggered function executed successfully.";
+            using var processedImageStream = await ImageResizer.ConvertToJpg(stream, width: 600, height: 600, resetStream: true, cancellationToken);
+            var resizedImageUrl = await _imageUploader.UploadImage(processedImageStream, IsOriginalImage: false, fileName, cancellationToken);
 
-            return new OkObjectResult(responseMessage);
+            var post = req.MapToPost(originalImageUrl, resizedImageUrl);
+
+            await _postsService.CreatePost(post, cancellationToken);
+
+            return new OkResult();
         }
+        catch (Exception ex)
+        {
+            log.LogError(ex, "Something went wrong while processing this request");
+            return new InternalServerErrorResult();
+        }
+    }
+
+    private static (bool IsValid, string ValidationError) ValidateRequest(HttpRequest req)
+    {
+        if (!req.Form.ContainsKey("userId"))
+            return (false, "UserId is required");
+
+        if (!req.Form.ContainsKey("creator"))
+            return (false, "Creator is required");
+
+        if (req.Form.Files.Count != 1)
+            return (false, "A post must include only one image");
+
+        if (!Constants.AllowedFileTypes.Any(fileType => fileType.Equals(req.Form.Files[0].ContentType, StringComparison.OrdinalIgnoreCase)))
+            return (false, "Image type not supported");
+
+        if (req.Form.Files[0].Length > Constants.MaxFileSize)
+            return (false, "Image too large");
+
+        return (true, default);
     }
 }
