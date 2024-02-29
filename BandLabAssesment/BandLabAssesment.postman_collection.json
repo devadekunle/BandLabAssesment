@@ -1,0 +1,121 @@
+{
+	"info": {
+		"_postman_id": "fc8f3003-e84f-4421-8119-b20eaa38139e",
+		"name": "BandLabAssesment",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "6139506"
+	},
+	"item": [
+		{
+			"name": "Create a Post",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "caption",
+							"value": "This is a caption",
+							"type": "text"
+						},
+						{
+							"key": "image",
+							"type": "file",
+							"src": "/C:/Users/alugb/Downloads/Sample-jpg-image-30mb.jpg"
+						},
+						{
+							"key": "creatorId",
+							"value": "{{$ulid}}",
+							"type": "text"
+						},
+						{
+							"key": "creator",
+							"value": "{{$randomWords}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:7071/api/v1/posts",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7071",
+					"path": [
+						"api",
+						"v1",
+						"posts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Comment on a Post",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"content\":\"{{$randomLoremWord}}\",\r\n    \"creatorId\":\"f8a582e8-c8d5-44d4-a411-35c2eb1ab6e5\",\r\n    \"creator\":\"{{$randomFullName}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:7071/api/v1/posts/c863e258-d553-4419-9a20-8a31366cf4d8/comments",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7071",
+					"path": [
+						"api",
+						"v1",
+						"posts",
+						"c863e258-d553-4419-9a20-8a31366cf4d8",
+						"comments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete a comment from a post",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"creatorId\":\"4cf44d0c-b3a7-4008-a080-99692aef2459\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:7071/api/v1/posts/d68a21ed-b716-4db1-a021-7c94af8d4a50/comments/0c5103dc-d81d-45a3-b4d1-89f310e4e34f",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7071",
+					"path": [
+						"api",
+						"v1",
+						"posts",
+						"d68a21ed-b716-4db1-a021-7c94af8d4a50",
+						"comments",
+						"0c5103dc-d81d-45a3-b4d1-89f310e4e34f"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
