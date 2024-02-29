@@ -30,5 +30,5 @@ The following are required for the functional tests
 
 The functions are grouped within one 1 function app for the sake of this assesment and can be deployed to Azure this way, however the `UpdatePostWithComments` function which is reacts to updates/deletes to documents within the <br/>
 comments database can be deployed as a separate function app in a production environment. <br />
-This application would also need a proper Authorization/Authentication mechanism to be production ready (e.g JWT Authentication)
+*** This application would also need a proper Authorization/Authentication mechanism to be production ready (e.g JWT Authentication) ***
 
