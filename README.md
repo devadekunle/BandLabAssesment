@@ -5,6 +5,8 @@ The application comprises of the following: <br/>
   3 HTTP Trigger functions <br />
   1 Cosmos Trigger function <br />
 
+See [https://github.com/devadekunle/BandLabAssesment/blob/master/BandLabAssesment/BandLabAssesment.postman_collection.json](url) for the requests documentation. <br />
+The application uses ULIDs instead of Guids for Ids. You can use this tool to generate ulids for your requests [https://ulidgenerator.com/](url) <br />
 To get the app up and running the following needs to be configured/provisioned:
 ### Infrastructure
 
