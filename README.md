@@ -27,4 +27,7 @@ The following are required for the functional tests
 1. Storage account Connection String for tests
 2. A separate database for functional tests with TTL enabled on both `posts` and `comments` containers with whatever default is desired ( for cleanup of documents).
 3. The necessary configurations are in the test.settings.json file and should be replaced with the appropriate values or can be setup as environment variables in the executing environment
+
+The functions are grouped within one 1 function app for the sake of this assesment and can be deployed to Azure this way, however the `UpdatePostWithComments` function which is reacts to updates/deletes to documents within the <br/>
+comments database can be deployed as a separate function app in a production environment.
    
