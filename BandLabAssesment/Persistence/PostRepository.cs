@@ -7,7 +7,7 @@ namespace BandLabAssesment.Persistence;
 public class PostRepository : BaseRepository<Post>
 {
     public PostRepository(CosmosClient cosmosClient, CosmosDb settings)
-        : base(cosmosClient, settings, "posts")
+        : base(cosmosClient, settings, CosmosDb.PostsContainer)
     {
     }
 }

@@ -1,7 +1,6 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
+using System.Linq;
 
 namespace BandLabAssesment.Domain;
 
@@ -16,7 +15,7 @@ public class Post : BaseEntity
         ArgumentNullException.ThrowIfNull(resizedImageUrl);
         ArgumentNullException.ThrowIfNull(creator);
 
-        Id = Guid.NewGuid().ToString();
+        Id = Id = $"{Ulid.NewUlid()}-{creatorId}";
         CreatorId = creatorId;
         Creator = creator;
         OriginalImageUrl = originalImageUrl;
@@ -26,6 +25,8 @@ public class Post : BaseEntity
     }
 
     public string Caption { get; set; }
+
+    public int TotalCommentCount { get; set; }
 
     public string OriginalImageUrl { get; set; }
     public string ResizedImageUrl { get; set; }
@@ -38,5 +39,23 @@ public class Post : BaseEntity
 
     public IReadOnlyList<Comment> Comments { get => _comments.AsReadOnly(); }
 
-    public void AddComment(Comment comment) => _comments.Add(comment);
+    public void AddLatestComment(Comment comment)
+    {
+        if (Comments.Count < 2)
+            _comments.Add(comment);
+        else
+        {
+            var orderedComments = _comments.OrderBy(e => CreatedAt).ToList();
+            orderedComments[0] = comment;
+
+            _comments = orderedComments.OrderByDescending(e => e.CreatedAt).ToList();
+        }
+    }
+
+    public void IncreamentCommentCount() => TotalCommentCount++;
+
+    public bool RemoveFromLatestComments(Comment comment)
+    {
+        return _comments.Remove(comment);
+    }
 }

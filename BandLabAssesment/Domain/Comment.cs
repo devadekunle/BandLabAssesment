@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 
 namespace BandLabAssesment.Domain;
 
@@ -11,7 +12,7 @@ public class Comment : BaseEntity
         ArgumentNullException.ThrowIfNull(creator);
         ArgumentNullException.ThrowIfNull(creatorId);
 
-        Id = Guid.NewGuid().ToString();
+        Id = $"{Ulid.NewUlid()}-{creatorId}";
         PostId = postId;
         Content = content;
         CreatorId = creatorId;
@@ -20,11 +21,19 @@ public class Comment : BaseEntity
     }
 
     public string Content { get; set; }
+
     public string PostId { get; set; }
+
+    [JsonProperty("ttl", NullValueHandling = NullValueHandling.Ignore)]
+    public int? Ttl { get; set; }
 
     public string CreatorId { get; set; }
 
     public string Creator { get; set; }
 
     public DateTime CreatedAt { get; private set; }
+
+    public bool IsDeleted => Ttl.HasValue;
+
+    public void Delete() => Ttl = 30;
 }

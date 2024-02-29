@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.34607.79
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BandLabAssesment", "BandLabAssesment\BandLabAssesment.csproj", "{87E9BFAC-CBD1-4EAC-8960-A93C78AF3BDA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BandLabAssesment", "BandLabAssesment\BandLabAssesment.csproj", "{87E9BFAC-CBD1-4EAC-8960-A93C78AF3BDA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BandLabAssesment.Tests", "BandLabAssesment.Tests\BandLabAssesment.Tests.csproj", "{C3694CB7-80D0-478A-8C31-76397BAAF8EC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BandLabAssesment.UnitTests", "BandLabAssesment.UnitTests\BandLabAssesment.UnitTests.csproj", "{6DA70D7F-0CD7-4BAA-9186-85E9F715033E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{87E9BFAC-CBD1-4EAC-8960-A93C78AF3BDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{87E9BFAC-CBD1-4EAC-8960-A93C78AF3BDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{87E9BFAC-CBD1-4EAC-8960-A93C78AF3BDA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3694CB7-80D0-478A-8C31-76397BAAF8EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3694CB7-80D0-478A-8C31-76397BAAF8EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3694CB7-80D0-478A-8C31-76397BAAF8EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3694CB7-80D0-478A-8C31-76397BAAF8EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6DA70D7F-0CD7-4BAA-9186-85E9F715033E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6DA70D7F-0CD7-4BAA-9186-85E9F715033E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6DA70D7F-0CD7-4BAA-9186-85E9F715033E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6DA70D7F-0CD7-4BAA-9186-85E9F715033E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

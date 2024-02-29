@@ -1,5 +1,6 @@
 using BandLabAssesment.Extensions;
 using BandLabAssesment.Mappers;
+using BandLabAssesment.Models;
 using BandLabAssesment.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -27,7 +28,7 @@ public class CreatePost
 
     [FunctionName(Constants.Functions.CreatePostV1)]
     public async Task<IActionResult> Run(
-        [HttpTrigger(AuthorizationLevel.Function, "post", Route = Constants.ApiRoutes.CreatePostV1)] HttpRequest req,
+        [HttpTrigger(AuthorizationLevel.Function, "POST", Route = Constants.ApiRoutes.CreatePostV1)] HttpRequest req,
         ILogger log,
         CancellationToken cancellationToken)
     {
@@ -35,10 +36,11 @@ public class CreatePost
         {
             var validationResult = ValidateRequest(req);
             if (!validationResult.IsValid)
-                return new BadRequestObjectResult(validationResult);
+                return new BadRequestObjectResult(validationResult.ValidationError);
 
-            using var stream = req.Form.Files[0].OpenReadStream();
-            var fileName = req.Form.Files[0].FileName;
+            var file = req.Form.Files[0];
+            using var stream = file.OpenReadStream();
+            var fileName = file.FileName;
 
             var originalImageUrl = await _imageUploader.UploadImage(stream, IsOriginalImage: true, fileName, cancellationToken);
             stream.Reset();
@@ -48,9 +50,9 @@ public class CreatePost
 
             var post = req.MapToPost(originalImageUrl, resizedImageUrl);
 
-            await _postsService.CreatePost(post, cancellationToken);
+            var postId = await _postsService.CreatePost(post, cancellationToken);
 
-            return new OkResult();
+            return new OkObjectResult(new PostCreated(postId));
         }
         catch (Exception ex)
         {
@@ -61,17 +63,17 @@ public class CreatePost
 
     private static (bool IsValid, string ValidationError) ValidateRequest(HttpRequest req)
     {
-        if (!req.Form.ContainsKey("userId"))
-            return (false, "UserId is required");
+        if (!req.Form.ContainsKey("creatorId"))
+            return (false, Constants.ErrorMessages.CreatorIdNotProvided);
 
         if (!req.Form.ContainsKey("creator"))
-            return (false, "Creator is required");
+            return (false, Constants.ErrorMessages.CreatorNotProvided);
 
-        if (req.Form.Files.Count != 1)
-            return (false, "A post must include only one image");
+        if (req.Form.Files.Count < 1)
+            return (false, Constants.ErrorMessages.ImageNotProvided);
 
         if (!Constants.AllowedFileTypes.Any(fileType => fileType.Equals(req.Form.Files[0].ContentType, StringComparison.OrdinalIgnoreCase)))
-            return (false, "Image type not supported");
+            return (false, Constants.ErrorMessages.FileTypeNotSupported);
 
         if (req.Form.Files[0].Length > Constants.MaxFileSize)
             return (false, "Image too large");

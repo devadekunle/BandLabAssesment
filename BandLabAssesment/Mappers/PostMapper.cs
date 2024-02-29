@@ -12,7 +12,7 @@ public static class PostMapper
             req.Form.TryGetValue("caption", out var caption) ? caption : default,
             originalImageUrl,
             resizedImageUrl,
-            req.Form.TryGetValue("userId", out var userId) ? userId : default,
+            req.Form.TryGetValue("creatorId", out var creatorId) ? creatorId : default,
             req.Form.TryGetValue("creator", out var creator) ? creator : default
             );
     }
