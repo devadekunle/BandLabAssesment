@@ -29,6 +29,6 @@ The following are required for the functional tests
 3. The necessary configurations are in the test.settings.json file and should be replaced with the appropriate values or can be setup as environment variables in the executing environment
 
 The functions are grouped within one 1 function app for the sake of this assesment and can be deployed to Azure this way, however the `UpdatePostWithComments` function which is reacts to updates/deletes to documents within the <br/>
-comments database can be deployed as a separate function app in a production environment. <br />
-*** This application would also need a proper Authorization/Authentication mechanism to be production ready (e.g JWT Authentication) ***
+comments database can be deployed as a separate function app in a production environment. <br /> <br /><br/>
+**THIS APPLICATION REQUIRES A PROPER IDENTITY MECHANISM (AUTHENTICATION / AUTHORIZATION) TO BE PRODUCTION READT (e.g JWT Authentication)**
 
